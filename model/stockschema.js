@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 let myStockData = new Schema({
   name: String,
   symbol: String,
+  logo: String,
   timeseries: [{date: Date, open: Number, close: Number, predicted: Number}],
   technical: {
     stddev: Number,
