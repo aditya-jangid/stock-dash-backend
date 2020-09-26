@@ -11,9 +11,7 @@ let myStockData = new Schema({
     stddev: Number,
     sma: Number
   },
-  news: {
-    type: Array
-  },
+  news: [{headline: String, content: String}],
   facts: {
     type: Array
   }
