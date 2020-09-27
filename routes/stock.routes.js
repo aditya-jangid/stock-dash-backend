@@ -38,21 +38,33 @@ stockRoute.get('/chartDataby/:symbol', async (req, res) => {
         //     dates.push(item.date);
         //     closeValues.push(item.close);
         //   });
-        
-        var predictedObj = {
-            name : "predicted",
+
+        var predictedObj = [{
+            name: "predicted",
             series: []
-        };
+        }];
 
-        newData.map(function(item) {        
-            predictedObj.series.push({ 
-                 "name" : item.date.slice(0,10),
-                 "value"  : item.close
-             });
-         });
+        newData.map(function (item) {
+            predictedObj[0].series.push({
+                "name": item.date.slice(0, 10),
+                "value": item.predicted
+            });
+        });
 
+        var closeObj = [{
+            name: "actual",
+            series: []
+        }];
 
-        res.send(predictedObj);
+        newData.map(function (item) {
+            closeObj[0].series.push({
+                "name": item.date.slice(0, 10),
+                "value": item.close
+            });
+        });
+
+        var response = predictedObj.concat(closeObj);
+        res.send(response);
     } catch (err) {
         res.status(500).send(err);
     }
