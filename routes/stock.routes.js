@@ -40,7 +40,7 @@ stockRoute.get('/chartDataby/:symbol', async (req, res) => {
         //   });
 
         var predictedObj = [{
-            name: "predicted",
+            name: "Predicted",
             series: []
         }];
 
@@ -52,7 +52,7 @@ stockRoute.get('/chartDataby/:symbol', async (req, res) => {
         });
 
         var closeObj = [{
-            name: "actual",
+            name: "Actual",
             series: []
         }];
 
