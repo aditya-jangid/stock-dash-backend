@@ -17,6 +17,37 @@ stockRoute.route('/').get(async (req, res) => {
     })
 })
 
+//Update timeseries
+stockRoute.route('/').put(async (req, res) => {
+    myStockData.findOneAndUpdate(
+        req.body.symbol,
+        {
+            $addToSet: {
+                timeseries: [{
+                    date: req.body.date,
+                    open: req.body.open,
+                    close: req.body.close,
+                    predicted: req.body.predicted,
+                }]
+            }
+        },
+        { new: true },
+        function (err, data) {
+            if (err) {
+                return res.status(500).send({
+                    message: err.message || "Some error occured while updating data"
+                });
+            }
+            if (!data) {
+                return res.status(404).send({
+                    message: "data not found"
+                });
+            }
+
+            return res.status(200).send(data);
+        }
+    );
+})
 //Get all Reviews
 stockRoute.route('/reviews').get(async (req, res) => {
     myReviews.find((error, data) => {
@@ -29,19 +60,20 @@ stockRoute.route('/reviews').get(async (req, res) => {
 })
 
 //Create a review
-stockRoute.route('/reviews').post(function(req, res, next){
-    myReviews.create(req.body).then(function(data){
+stockRoute.route('/reviews').post(function (req, res, next) {
+    myReviews.create(req.body).then(function (data) {
         res.status(200).send(data);
     }).catch(next);
 });
 
 //Delete a review
-stockRoute.delete('/reviews/:id', function(req, res, next){
-    myReviews.findByIdAndRemove({_id: req.params.id}).then(function(data){
+stockRoute.delete('/reviews/:id', function (req, res, next) {
+    myReviews.findByIdAndRemove({ _id: req.params.id }).then(function (data) {
         res.send(data);
     }).catch(next);
 });
 
+//Get stock document by symbol
 stockRoute.get('/by/:symbol', async (req, res) => {
     const allData = await myStockData.find({ "symbol": req.params.symbol });
     try {
@@ -52,15 +84,15 @@ stockRoute.get('/by/:symbol', async (req, res) => {
 })
 
 // stockRoute.get('/by/:symbol/:date', async (req, res) => {
-//     const allData = await myStockData.find({ "symbol": req.params.symbol, "timeseries.date": req.params.date }, {symbol: true, date: true});
+//     const allData = await myStockData.find({ "symbol": req.params.symbol, "timeseries.date": req.params.date });
 //     try {
-        
-//         res.send(allData);
+//         res.send(allData[0].timeseries);
 //     } catch (err) {
 //         res.status(500).send(err);
 //     }
 // })
 
+//Get data in ngxchart schema
 stockRoute.get('/chartDataby/:symbol', async (req, res) => {
     const allData = await myStockData.find({ "symbol": req.params.symbol });
     try {
