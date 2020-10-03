@@ -6,7 +6,7 @@ let myStockData = new Schema({
   name: String,
   symbol: String,
   logo: String,
-  timeseries: [{date: Date, open: Number, close: Number, predicted: Number}],
+  timeseries: [{date: String, open: Number, close: Number, predicted: Number}],
   technical: {
     stddev: Number,
     sma: Number,

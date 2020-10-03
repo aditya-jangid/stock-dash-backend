@@ -3,6 +3,8 @@ const stockRoute = express();
 
 // Stock model
 let myStockData = require('../model/stockschema');
+let myReviews = require('../model/reviewschema');
+
 
 // Get all Stock
 stockRoute.route('/').get(async (req, res) => {
@@ -15,6 +17,31 @@ stockRoute.route('/').get(async (req, res) => {
     })
 })
 
+//Get all Reviews
+stockRoute.route('/reviews').get(async (req, res) => {
+    myReviews.find((error, data) => {
+        if (error) {
+            return next(error);
+        } else {
+            res.json(data)
+        }
+    })
+})
+
+//Create a review
+stockRoute.route('/reviews').post(function(req, res, next){
+    myReviews.create(req.body).then(function(data){
+        res.status(200).send(data);
+    }).catch(next);
+});
+
+//Delete a review
+stockRoute.delete('/reviews/:id', function(req, res, next){
+    myReviews.findByIdAndRemove({_id: req.params.id}).then(function(data){
+        res.send(data);
+    }).catch(next);
+});
+
 stockRoute.get('/by/:symbol', async (req, res) => {
     const allData = await myStockData.find({ "symbol": req.params.symbol });
     try {
@@ -23,6 +50,16 @@ stockRoute.get('/by/:symbol', async (req, res) => {
         res.status(500).send(err);
     }
 })
+
+// stockRoute.get('/by/:symbol/:date', async (req, res) => {
+//     const allData = await myStockData.find({ "symbol": req.params.symbol, "timeseries.date": req.params.date }, {symbol: true, date: true});
+//     try {
+        
+//         res.send(allData);
+//     } catch (err) {
+//         res.status(500).send(err);
+//     }
+// })
 
 stockRoute.get('/chartDataby/:symbol', async (req, res) => {
     const allData = await myStockData.find({ "symbol": req.params.symbol });
