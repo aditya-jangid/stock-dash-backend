@@ -20,9 +20,9 @@ stockRoute.route('/').get(async (req, res) => {
 //Update timeseries
 stockRoute.route('/').put(async (req, res) => {
     myStockData.findOneAndUpdate(
-        req.body.symbol,
+        {"symbol" : req.body.symbol},
         {
-            $addToSet: {
+            $set: {
                 timeseries: [{
                     date: req.body.date,
                     open: req.body.open,
